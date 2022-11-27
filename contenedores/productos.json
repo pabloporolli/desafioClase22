@@ -1,0 +1,20 @@
+[
+  {
+    "nombre": "Trek",
+    "precio": "10000",
+    "foto": "http://localhost:8080/",
+    "id": 1
+  },
+  {
+    "nombre": "trek",
+    "precio": "433242",
+    "foto": "http://localhost:8080/",
+    "id": 2
+  },
+  {
+    "nombre": "Ninitendo switch",
+    "precio": "1",
+    "foto": "http://localhost:8080/",
+    "id": 3
+  }
+]
