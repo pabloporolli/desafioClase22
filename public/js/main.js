@@ -21,26 +21,12 @@ agregarProducto.addEventListener('submit', e => {
 function render(data) {
     const tablaProductos = data.map(item => {
         return (`
-        <div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">id</th>
-                        <th scope="col">Marca</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col">Imagen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.nombre}</td>
-                        <td>${item.precio}</td>
-                        <td>${item.foto}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.nombre}</td>
+                <td>${item.precio}</td>
+                <td>${item.foto}</td>
+            </tr>
         `)
     }).join('')
     document.getElementById('listaProductos').innerHTML = tablaProductos
@@ -83,7 +69,9 @@ function renderMensajes(data) {
         return (`
             <div>
                 <ul class="list-group">
-                    <li class="list-group-item">Usuario: ${item.email} Mensaje: ${item.text}</li>
+                    <li class="list-group-item" id="lista">
+                    <strong style="color: blue">${item.email}</strong> <span style="color: brown">[${(new Date()).toLocaleString()}]: </span> <em style="color: green">${item.text}</em>
+                    </li>
                 </ul>
             </div>
             `)
