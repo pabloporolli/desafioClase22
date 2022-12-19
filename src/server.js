@@ -1,10 +1,10 @@
-const express = require('express')
-const {Server: HttpServer} = require('http')
-const {Server: Socket} = require('socket.io')
-// const upload = require('./multer.js')
+import express from 'express'
+import {Server as HttpServer} from 'http'
+import {Server as Socket} from 'socket.io'
 
-const Contenedor = require('../contenedores/contenedor.js')
-const ContenedorMensajes = require('../contenedores/contenedorMensajes.js')
+// const Contenedor = require('../contenedores/contenedor.js')
+// const ContenedorMensajes = require('../contenedores/contenedorMensajes.js')
+
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -12,27 +12,41 @@ const io = new Socket(httpServer)
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(express.static('public'))
+app.use('/', express.static('../public'))
 
-const productos = new Contenedor ('contenedores/productos.json')
-const mensajes = new ContenedorMensajes ('contenedores/mensajes.json')
+import ContenedorDB from '../contenedores/contenedorDB.js'
+import config from './config.js'
+
+const productos = new ContenedorDB (config.mysql, 'productos')
+const mensajes = new ContenedorDB (config.sqlite3, 'mensajes')
 
 io.on('connection', socket => {
     console.log('Nuevo cliente conectado');
     
     socket.on('nuevoProducto', data => {
         productos.save(data)
+        .then(()=>{
+            productos.getAll()
+                .then((res) => {
+                socket.emit('productos', res) 
+            })
+        })
     })
 
     productos.getAll()
         .then((res) => {
             socket.emit('productos', res)
         })
-
+            
     socket.on('nuevoMensaje', data => {
         mensajes.save(data)
+        .then(() => {
+            mensajes.getAll()
+            .then((res) => {
+                socket.emit('mensajes', res)
+            })
+        })
     })
-
 
     mensajes.getAll()
         .then((res) => {

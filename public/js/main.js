@@ -4,17 +4,17 @@ const agregarProducto = document.getElementById('formAgregarProducto')
 agregarProducto.addEventListener('submit', e => {
     e.preventDefault()
 
-    const nombre = document.getElementById('nombre').value
-    const precio = document.getElementById('precio').value
-    const foto = document.getElementById('foto').value
+    const name = document.getElementById('nombre').value
+    const price = document.getElementById('precio').value
+    const url = document.getElementById('foto').value
 
     const nuevoProducto = {
-        nombre: nombre,
-        precio: precio,
-        foto: foto
+        name: name,
+        price: price,
+        url: url
     }
 
-    socket.emit('nuevoProducto', nuevoProducto)
+    socket.emit('nuevoProducto', nuevoProducto);
 
 })
 
@@ -23,9 +23,9 @@ function render(data) {
         return (`
             <tr>
                 <td>${item.id}</td>
-                <td>${item.nombre}</td>
-                <td>${item.precio}</td>
-                <td>${item.foto}</td>
+                <td>${item.name}</td>
+                <td>${item.price}</td>
+                <td>${item.url}</td>
             </tr>
         `)
     }).join('')
