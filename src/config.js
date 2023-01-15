@@ -5,7 +5,7 @@ export default {
             host: '127.0.0.1',
             user: 'root',
             password: 'root',
-            database: 'desafio8',  // Acá va el nombre de la DB
+            database: 'desafioClase22',  // Acá va el nombre de la DB
             port: 8889
         }
     },
