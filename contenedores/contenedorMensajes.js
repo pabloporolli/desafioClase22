@@ -1,4 +1,4 @@
-const fs = require ('fs').promises
+import { promises as fs } from 'fs'
 
 class ContenedorMensajes {
     constructor (path) {
@@ -9,7 +9,12 @@ class ContenedorMensajes {
         try {
             let dataSinJSON = await fs.readFile(this.fileName, 'utf-8');
             const data = JSON.parse(dataSinJSON);
-            data.push(mensaje);
+            const contenido = data.mensajes
+            let idUltimo;
+            contenido.length === 0 ? idUltimo = 0 : idUltimo = (contenido[contenido.length-1].id);
+            const idNuevo = idUltimo + 1;
+            contenido.id = idNuevo;
+            contenido.push(mensaje);
 
             await fs.writeFile(this.fileName, JSON.stringify(data, null, 2), 'utf-8');
             
@@ -48,6 +53,6 @@ class ContenedorMensajes {
 
 }
 
-module.exports = ContenedorMensajes;
+export default ContenedorMensajes
 
 

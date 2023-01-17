@@ -17,9 +17,10 @@ app.use('/', express.static('../public'))
 
 import ContenedorDB from '../contenedores/contenedorDB.js'
 import config from './config.js'
+import ContenedorMensajes from '../contenedores/contenedorMensajes.js'
 
 const productos = new ContenedorDB (config.mysql, 'productos')
-const mensajes = new ContenedorDB (config.sqlite3, 'mensajes')
+const mensajes = new ContenedorMensajes ('../contenedores/mensajes.json')
 
 io.on('connection', socket => {
     console.log('Nuevo cliente conectado');
@@ -45,27 +46,25 @@ io.on('connection', socket => {
         console.log(util.inspect(objeto, false, 12, true));
     }
     
-    const normalizarMensaje = function (mens) {
-        const author = new schema.Entity('autor')
-        const text = new schema.Entity('texto')
-        const mensaje = new schema.Entity('mensajeCompleto', {
-            author: author,
-            text: text
-        })
+    const author = new schema.Entity('authors', {}, { idAttribute: 'email' })
+    const mensaje = new schema.Entity('text', {author: author})
+    const mensajesPost = new schema.Entity('posts', { mensajes: [mensaje] })
 
-        const normalizedData = normalize(mens, mensaje)
+    function normalizarMensaje(mens) {
+
+        const normalizedData = normalize(mens, mensajesPost)
         print(normalizedData)
-
+        console.log("RESULTADO FUNCION: ", normalizedData);
         return normalizedData
     }
             
     socket.on('nuevoMensaje', async data => {
 
         try {
-            const dataNormalizada = normalizarMensaje(data)
-            await mensajes.save(dataNormalizada)
+            await mensajes.save(data)
             const listaMensajes = await mensajes.getAll()
-            await socket.emit('mensajes', listaMensajes)
+            const dataNormalizada = normalizarMensaje(listaMensajes)
+            socket.emit('mensajes', dataNormalizada)
 
         } catch (error) {
             console.log("Error al normalizar: ", error);

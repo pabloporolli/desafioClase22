@@ -40,6 +40,19 @@ socket.on('productos', data => {
 //-----------------------------------------------------------------------------------------------------------
 // CHAT
 
+
+//--------- DESNORMALIZAR MENSAJES----------------------
+const author = new normalizr.schema.Entity('authors', {}, {idAttribute:"email"})
+const mensaje = new normalizr.schema.Entity('text',{
+    author: author
+})
+const schemaMensajes = new normalizr.schema.Entity('posts',{
+    mensajes: [mensaje]
+})
+
+//---------------------------------------
+
+
 const email = document.getElementById('inputUsername')
 const message = document.getElementById('inputMensaje')
 const botonEnviar = document.getElementById('btnEnviar')
@@ -50,9 +63,21 @@ agregarMensaje.addEventListener('submit', e => {
 
     const email = document.getElementById('inputUsername').value
     const message = document.getElementById('inputMensaje').value
+    const firstName = document.getElementById('firstname').value
+    const lastName = document.getElementById('lastname').value
+    const age = document.getElementById('age').value
+    const alias = document.getElementById('alias').value
+    const avatar = document.getElementById('avatar').value
 
     const nuevoMensaje = {
-        email: email,
+        author: {
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            age: age,
+            alias: alias,
+            avatar: avatar
+        },
         text: message
     }
 
@@ -65,12 +90,14 @@ agregarMensaje.addEventListener('submit', e => {
 })
 
 function renderMensajes(data) {
-    const listaMensajes = data.map(item => {
+    const listaMensajes = data.mensajes.map(item => {
         return (`
             <div>
                 <ul class="list-group">
                     <li class="list-group-item" id="lista">
-                    <strong style="color: blue">${item.email}</strong> <span style="color: brown">[${(new Date()).toLocaleString()}]: </span> <em style="color: green">${item.text}</em>
+                    <strong style="color: blue">${item.author.email}</strong> <span style="color: brown">[${(new Date()).toLocaleString()}]:
+                    </span> <em style="color: green">${item.text}</em>
+                    <img width="50" src="${item.avatar}" alt=" ">     
                     </li>
                 </ul>
             </div>
@@ -79,10 +106,24 @@ function renderMensajes(data) {
         document.getElementById('mensajes').innerHTML = listaMensajes
 
     }
+
     
     
-    socket.on('mensajes', data => {
-        renderMensajes(data)
+    socket.on('mensajes', async data => {
+        let dataSize = JSON.stringify(data).length
+        console.log("DATA: ", data);
+        console.log("DATASIZE: ", dataSize);
+
+        let mensajesD = await normalizr.denormalize(data.result, schemaMensajes, data.entities)
+        console.log("D: ", mensajesD);
+        let mensajesDsize = JSON.stringify(mensajesD).length
+        console.log("MENSAJESD SIZE: ", mensajesDsize);
+
+        let porcentajeC = parseInt((dataSize * 100) / mensajesDsize)
+        console.log(`Porcentaje de compresión ${porcentajeC}%`)
+        document.getElementById('compresion-info').innerText = porcentajeC
+
+        renderMensajes(mensajesD)
 })
 
 email.addEventListener('input', () => {

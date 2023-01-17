@@ -9,6 +9,8 @@
 
     <script src="/socket.io/socket.io.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     
@@ -69,23 +71,30 @@
             <h1>Centro de Mensajes</h1>
             <br>
 
+            <h1>Centro de Mensajes (Compresión: <span id="compresion-info"></span>%)</h1>
+            <br>
+
             <input type="text" id="inputUsername" class="form-control w-50 my-2 mr-2" placeholder="Ingresá tu email">
-
+            <input type="text" id="firstname" class="form-control w-50 my-2 mr-2" placeholder="Ingresá tu nombre">
+            <input type="text" id="lastname" class="form-control w-50 my-2 mr-2" placeholder="Ingresá tu apellido">
+            <input type="text" id="age" class="form-control w-50 my-2 mr-2" placeholder="Ingresá tu edad">
+            <input type="text" id="alias" class="form-control w-50 my-2 mr-2" placeholder="Ingresá tu alias">
+            <input type="text" id="avatar" class="form-control w-50 my-2 mr-2" placeholder="Ingresá tu avatar (url)">
             <hr>
 
-            <div id="mensajes"></div>
-
+            
             <hr>
-
+            
             <form id="formPublicarMensaje" class="form-inline" autocomplete="off">
                 <div class="form-group">
                     <input disabled id="inputMensaje" type="text" class="form-control my-2 mr-2"
-                        placeholder="Ingresá un mensaje...">
+                    placeholder="Ingresá un mensaje...">
                     <button disabled id="btnEnviar" type="submit" class="btn btn-primary my-2">Enviar!</button>
                 </div>
             </form>
         </div>
-
+        
+        <div id="mensajes"></div>
     </div>
 
 
